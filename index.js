@@ -43,11 +43,19 @@ app.get('/', function (req, res) {
 
 app.get('/connection', function (req, res) {
     
+<<<<<<< HEAD
+=======
+
+>>>>>>> a442a3b00d13c1ca23d9b1389193344af7ca51dc
     con.query('SELECT `pseudo` FROM `Utilisateur` as u WHERE (u.pseudo = "'+req.query.id 
                 +'" OR u.mail = "'+req.query.id 
                 +'") AND u.password ="'+req.query.mdp 
                 +'";'
     , function (err, results) {
+<<<<<<< HEAD
+=======
+
+>>>>>>> a442a3b00d13c1ca23d9b1389193344af7ca51dc
         if (err) throw err;res.send(JSON.stringify(results));
     });
 });
@@ -81,7 +89,6 @@ app.get('/getLivre',function (req, res){
     con.query('SELECT * FROM `Livre` WHERE `titre` = ?', [req.query.recherche], function (err, results) {
         if (err) throw err;res.send(JSON.stringify(results));
     });
-    console.log(req.query.recherche)
 });
 
 

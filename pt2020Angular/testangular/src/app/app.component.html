@@ -324,8 +324,18 @@
 
 
 
+<<<<<<< HEAD
 <!-- Ajouter des boutons-->
 
+=======
+<div id ="ConnectionBlock">
+
+
+
+<input (keyup)="saisiPseudoConnection($event)" name ="Pseudo">
+<input (keyup)="saisiMDPConnection($event)" type ="password" name="Mot de Passe">
+<button (click)="connection()">Envoyer</button>
+>>>>>>> a442a3b00d13c1ca23d9b1389193344af7ca51dc
 
 <div id="ConnectionBlock">
   <button (click)="creationCompte1()">Se créer un compte</button>
@@ -336,6 +346,7 @@
   <p>{{resConnection}}</p>
 </div>
 
+<<<<<<< HEAD
 <div id="InscriptionBlock" style="display: none;">
   Inscription :
   <input (keyup)="saisiPseudoConnection($event)" name ="Pseudo">
@@ -347,12 +358,22 @@
 
 
 <div id="RechercheLivre" style="display: none;">
+=======
+  
+
+>>>>>>> a442a3b00d13c1ca23d9b1389193344af7ca51dc
 <input (keyup)="WriteBook($event)" id="searchBook" placeholder="Chercher un livre" type="textfield">
-<p>{{livre}}</p>
 <input (click)="cherche()" type="button" value="ok">
+<<<<<<< HEAD
 </div>
   
   
+=======
+
+<ul>
+  <li *ngFor="let livre of livres">{{livre.titre}} ---> {{livre.auteur}} <input (click)="ajouter()" type="button" value={{livre.id}}></li>
+</ul>
+>>>>>>> a442a3b00d13c1ca23d9b1389193344af7ca51dc
    
   <!-- Footer -->
   <footer>
