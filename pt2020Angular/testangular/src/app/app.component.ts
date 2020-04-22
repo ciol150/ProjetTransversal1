@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { HttpClient} from '@angular/common/http';
+import { HttpClient, HttpParams} from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 
 
@@ -24,11 +24,11 @@ export class AppComponent {
   
   constructor(private http: HttpClient){}
   test() {
-    const params = {
-      param1: this.pseudo,
-      responseType: 'text'
-    }
-  this.http.get("http://localhost:3000/getUser", { params })
+  let parametres = new HttpParams();
+  parametres = parametres.append('pseudo', this.pseudo);
+
+  console.log(parametres);
+  this.http.get("http://localhost:3000/getUser", { params: parametres} )
   //this.http.get("http://localhost:3000/getUser", { responseType: 'text' })
   .subscribe(res => { console.log(res);
 })}

@@ -42,8 +42,8 @@ app.get('/', function (req, res) {
 
 
 app.get('/getUser', function (req, res) {
-    var postData= req.body;
-    con.query('select * from Profil where pseudo = ?', postData, function (err, results) {
+    
+    con.query('SELECT * FROM `Profil` WHERE `pseudo` = ?', [req.query.pseudo], function (err, results) {
         if (err) throw err;res.send(JSON.stringify(results));
     });
 });
