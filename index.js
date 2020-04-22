@@ -21,7 +21,7 @@ let con = mysql.createConnection({
 /*
 app.post('/addProfil', function (req, res) {
     var postData= req.body;
-    con.query('INSERT INTO Profil SET ?', postData, function (error, results, fields) {
+    con.query('INSERT INTO Utilisateur SET ?', postData, function (error, results, fields) {
         if (error) 
             throw error;
         res.send(results);
@@ -32,7 +32,7 @@ app.use(function(req, res, next) {res.header("Access-Control-Allow-Origin", "*")
 
 
 app.get('/', function (req, res) {
-    con.query('select * from Profil ', 
+    con.query('select * from Utilisateur ', 
     [req.params.id], 
     function (err, results) {
         if (err) throw err;res.send(JSON.stringify(results));
@@ -41,9 +41,13 @@ app.get('/', function (req, res) {
 
 
 
-app.get('/getUser', function (req, res) {
+app.get('/connection', function (req, res) {
     
-    con.query('SELECT * FROM `Profil` WHERE `pseudo` = ?', [req.query.pseudo], function (err, results) {
+    con.query('SELECT `pseudo` FROM `Utilisateur` as u WHERE (u.pseudo = "'+req.query.id 
+                +'" OR u.mail = "'+req.query.id 
+                +'") AND u.password ="'+req.query.mdp 
+                + '";'
+    , function (err, results) {
         if (err) throw err;res.send(JSON.stringify(results));
     });
 });

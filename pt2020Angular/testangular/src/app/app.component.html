@@ -345,11 +345,16 @@
 
 <!-- Ajouter des boutons-->
 
-<button (click)="test()">Click me!</button>
 
-<input (keyup)="onKey($event)" type ="password">
-<p>{{pseudo}}</p>
+<div id ="ConnectionBlock">
+Connexion :
 
+<input (keyup)="saisiPseudoConnection($event)" name ="Pseudo">
+<input (keyup)="saisiMDPConnection($event)" type ="password" name="Mot de Passe">
+<button (click)="connection()">Envoyer</button>
+
+<p>{{resConnection}}</p>
+</div>
 
   
 
