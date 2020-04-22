@@ -43,13 +43,25 @@ app.get('/', function (req, res) {
 
 app.get('/connection', function (req, res) {
     
+<<<<<<< HEAD
     con.query('SELECT `pseudo` FROM `Utilisateur` as u WHERE (u.pseudo = "'+req.query.id 
                 +'" OR u.mail = "'+req.query.id 
                 +'") AND u.password ="'+req.query.mdp 
                 + '";'
     , function (err, results) {
+=======
+    con.query('SELECT * FROM `Utilisateur` WHERE `pseudo` = ?', [req.query.pseudo], function (err, results) {
+>>>>>>> 80073f8f08afa2b6080c01d06fa5b261d9379fe2
         if (err) throw err;res.send(JSON.stringify(results));
     });
+});
+
+app.get('/getLivre',function (req, res){
+
+    con.query('SELECT * FROM `Livre` WHERE `titre` = ?', [req.query.recherche], function (err, results) {
+        if (err) throw err;res.send(JSON.stringify(results));
+    });
+    console.log(req.query.recherche)
 });
 
 
