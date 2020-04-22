@@ -43,18 +43,38 @@ app.get('/', function (req, res) {
 
 app.get('/connection', function (req, res) {
     
-<<<<<<< HEAD
     con.query('SELECT `pseudo` FROM `Utilisateur` as u WHERE (u.pseudo = "'+req.query.id 
                 +'" OR u.mail = "'+req.query.id 
                 +'") AND u.password ="'+req.query.mdp 
-                + '";'
+                +'";'
     , function (err, results) {
-=======
-    con.query('SELECT * FROM `Utilisateur` WHERE `pseudo` = ?', [req.query.pseudo], function (err, results) {
->>>>>>> 80073f8f08afa2b6080c01d06fa5b261d9379fe2
         if (err) throw err;res.send(JSON.stringify(results));
     });
 });
+
+app.get('/existeDeja', function (req, res) {
+    con.query('SELECT `pseudo` FROM `Utilisateur` as u WHERE (u.pseudo = "'+req.query.pseudo 
+                +'" OR u.mail = "'+req.query.mail 
+                +'");'
+    , function (err, results) {
+        if (err) throw err;res.send(JSON.stringify(results));
+    });
+});
+
+app.post('/addUser', function (req, res) {
+    con.query('INSERT INTO Utilisateur SET pseudo = "'+req.body.pseudo
+                +'", password ="'+req.body.mdp
+                +'", mail ="'+req.body.mail
+                +'";'
+    , function (error, results, fields) {
+        if (error) 
+            throw error;
+        res.send(results);
+    });
+});
+
+
+
 
 app.get('/getLivre',function (req, res){
 
