@@ -32,7 +32,7 @@ app.use(function(req, res, next) {res.header("Access-Control-Allow-Origin", "*")
 
 
 app.get('/', function (req, res) {
-    con.query('select * from Profil ', 
+    con.query('select * from Utilisateur ', 
     [req.params.id], 
     function (err, results) {
         if (err) throw err;res.send(JSON.stringify(results));
@@ -43,9 +43,17 @@ app.get('/', function (req, res) {
 
 app.get('/getUser', function (req, res) {
     
-    con.query('SELECT * FROM `Profil` WHERE `pseudo` = ?', [req.query.pseudo], function (err, results) {
+    con.query('SELECT * FROM `Utilisateur` WHERE `pseudo` = ?', [req.query.pseudo], function (err, results) {
         if (err) throw err;res.send(JSON.stringify(results));
     });
+});
+
+app.get('/getLivre',function (req, res){
+
+    con.query('SELECT * FROM `Livre` WHERE `titre` = ?', [req.query.recherche], function (err, results) {
+        if (err) throw err;res.send(JSON.stringify(results));
+    });
+    console.log(req.query.recherche)
 });
 
 

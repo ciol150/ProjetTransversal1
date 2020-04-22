@@ -350,8 +350,9 @@
 <input (keyup)="onKey($event)" type ="password">
 <p>{{pseudo}}</p>
 
-
-  
+<input (keyup)="WriteBook($event)" id="searchBook" placeholder="Chercher un livre" type="textfield">
+<p>{{livre}}</p>
+<input (click)="cherche()" type="button" value="ok">
 
   
   
