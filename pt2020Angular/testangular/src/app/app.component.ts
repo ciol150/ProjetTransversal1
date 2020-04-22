@@ -15,31 +15,35 @@ export class AppComponent {
   
   resConnection = "";
   title = 'testangular';
-<<<<<<< HEAD
   pseudo = "";
   mdp = "";
-=======
-  pseudo = '';
   recherche= '';
->>>>>>> 80073f8f08afa2b6080c01d06fa5b261d9379fe2
+  /*livres = [
+    {
+      titre: 'test',
+      auteur:'test2'
+    }
+    
+  ]*/
+  livres=[];
 
   saisiPseudoConnection(event: KeyboardEvent){
     this.pseudo = (event.target as HTMLInputElement).value;
   }
-<<<<<<< HEAD
+
   saisiMDPConnection(event: KeyboardEvent){
     this.mdp = (event.target as HTMLInputElement).value;
   }
 
 
-=======
+
   WriteBook(event: KeyboardEvent){
     this.recherche = (event.target as HTMLInputElement).value;
   }
->>>>>>> 80073f8f08afa2b6080c01d06fa5b261d9379fe2
+
 
   constructor(private http: HttpClient){}
-<<<<<<< HEAD
+  
 
 
 
@@ -60,7 +64,7 @@ export class AppComponent {
       }    
     })
   }
-=======
+
   test() {
   let parametres = new HttpParams();
   parametres = parametres.append('pseudo', this.pseudo);
@@ -71,7 +75,7 @@ export class AppComponent {
   //this.http.get("http://localhost:3000/getUser", { responseType: 'text' })
   .subscribe(res => { console.log(res);
 })}
->>>>>>> 80073f8f08afa2b6080c01d06fa5b261d9379fe2
+
 
 cherche(){
   let parametres = new HttpParams();
@@ -79,7 +83,23 @@ cherche(){
 
   this.http.get("http://localhost:3000/getLivre", { params: parametres} )
   .subscribe(res => { console.log(res);
+    this.livres = [
+      {
+        titre: res[0].titre,
+        auteur:res[0].auteur,
+        id: res[0].idLivre
+      },      
+    ]
+  
   
 })}
+
+ajouter(){
+  let parametres = new HttpParams();
 }
 
+}
+
+
+  
+    

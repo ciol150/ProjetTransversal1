@@ -347,9 +347,9 @@
 
 
 <div id ="ConnectionBlock">
-Connexion :
 
-<<<<<<< HEAD
+
+
 <input (keyup)="saisiPseudoConnection($event)" name ="Pseudo">
 <input (keyup)="saisiMDPConnection($event)" type ="password" name="Mot de Passe">
 <button (click)="connection()">Envoyer</button>
@@ -358,14 +358,13 @@ Connexion :
 </div>
 
   
-=======
-<input (keyup)="WriteBook($event)" id="searchBook" placeholder="Chercher un livre" type="textfield">
-<p>{{livre}}</p>
-<input (click)="cherche()" type="button" value="ok">
->>>>>>> 80073f8f08afa2b6080c01d06fa5b261d9379fe2
 
-  
-  
+<input (keyup)="WriteBook($event)" id="searchBook" placeholder="Chercher un livre" type="textfield">
+<input (click)="cherche()" type="button" value="ok">
+
+<ul>
+  <li *ngFor="let livre of livres">{{livre.titre}} ---> {{livre.auteur}} <input (click)="ajouter()" type="button" value={{livre.id}}></li>
+</ul>
    
   <!-- Footer -->
   <footer>
