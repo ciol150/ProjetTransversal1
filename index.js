@@ -142,8 +142,56 @@ app.post('/nommerModo', function (req, res) {
     });
 });
 
+app.post('/rendreIndisponible', function (req, res) {
+    con.query('UPDATE Livre SET disponible = 0 WHERE `idLivre` = "'+req.body.idLivre + '";'
+    , function (error, results, fields) {
+        if (error) 
+            throw error;
+        res.send(results);
+    });
+});
+
+app.post('/rendreDisponible', function (req, res) {
+    con.query('UPDATE Livre SET disponible = 1 WHERE `idLivre` = "'+req.body.idLivre + '";'
+    , function (error, results, fields) {
+        if (error) 
+            throw error;
+        res.send(results);
+    });
+});
+
+app.post('/addListeLivre', function (req, res) {
+    con.query('INSERT INTO ListeDeLivre SET pseudo = "'+req.body.pseudo
+                +'", idLivre ="'+req.body.idLivre
+                +'";'
+    , function (error, results, fields) {
+        if (error) 
+            throw error;
+        res.send(results);
+    });
+});
+
+app.delete('/removeListeLivre', function (req, res) {
+    con.query('DELETE FROM ListeDeLivre WHERE pseudo = "'+req.body.pseudo
+                +'" AND idLivre ="'+req.body.idLivre
+                +'";'
+    , function (error, results, fields) {
+        if (error) 
+            throw error;
+        res.send(results);
+    });
+});
+
+app.get('/getListeLivre',function (req, res){
+    con.query('SELECT Livre.idLivre, Livre.titre, Livre.auteur FROM `ListeDeLivre`, `Livre` WHERE ListeDeLivre.idLivre = Livre.idLivre AND ListeDeLivre.pseudo = "'+req.query.pseudo
+    +'";', function (err, results) {
+        if (err) throw err;res.send(JSON.stringify(results));
+    });
+});
+
+
 app.get('/getLivre',function (req, res){
-    con.query('SELECT * FROM `Livre` WHERE `titre` LIKE "%'+req.query.recherche+'%";', function (err, results) {
+    con.query('SELECT * FROM `Livre` WHERE `disponible` = 1 AND `titre` LIKE "%'+req.query.recherche+'%";', function (err, results) {
         if (err) throw err;res.send(JSON.stringify(results));
     });
 });

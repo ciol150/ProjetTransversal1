@@ -10,24 +10,14 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    margin: 8px 0;
-  }
-
-  p {
-    margin: 0;
-  }
+ 
+  
 
   .spacer {
     flex: 1;
   }
 
-  .toolbar {
+  .toolbar { 
     position: absolute;
     top: 0;
     left: 0;
@@ -351,7 +341,7 @@
   <button (click)="afficherMenuDonner()">Donner livre</button>
   <button (click)="afficherMenuChercher()">Chercher livre</button>
   <button (click)="abc()">Consulter recommandations</button>
-  <button (click)="listeLivre()">Consulter lite de livres</button>
+  <button (click)="afficherMenuListe()">Consulter lite de livres</button>
   <br>
   <p>{{messageMenuPrincipal}}</p>
 </div>
@@ -383,18 +373,21 @@
   <button (click)="donnerLivre()">Enregistrer livre</button>
 </div>
 
+<div id="MenuListe" style="display: none;">
+  <button (click)="resetAuMenuPrincipal()">Retour</button>
+</div>
 
+<!-- Rechercher -->
 <div id="RechercheLivre" style="display: none;">
 <input (keyup)="WriteBook($event)" id="searchBook" placeholder="Chercher un livre" type="textfield">
 <input (click)="cherche()" type="button" value="ok">
 </div>
   
-  
-
 <ul>
-  <li *ngFor="let livre of livres">{{livre.titre}} ---> {{livre.auteur}} <input (click)="ajouter()" type="button" value={{livre.id}}></li>
+  <li *ngFor="let livre of livres">{{livre.titre}} ---> {{livre.auteur}} <input (click)="ajouter(livre.id)" type="button" value={{livre.id}}></li>
 </ul>
    
+<!-- Liste de livre -->
 
 
   <!-- Footer -->

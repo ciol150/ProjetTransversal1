@@ -73,7 +73,7 @@ export class AppComponent {
     document.getElementById("ConnectionBlock").style.display = "none";
     document.getElementById("MenuDonner").style.display = "none";
     document.getElementById("RechercheLivre").style.display = "none";
-
+    document.getElementById("MenuListe").style.display = "none";
     this.resInscription = "";
     this.resConnection = "";
     this.futurModo = "";
@@ -150,6 +150,42 @@ export class AppComponent {
     document.getElementById("MenuPrincipal").style.display = "none";
     document.getElementById("RechercheLivre").style.display = "block";
   }
+
+  afficherMenuListe(){
+    var liste = document.getElementById("MenuListe");
+    let parametres = new HttpParams();
+    parametres = parametres.append('pseudo', this.pseudo);
+    //console.log(parametres);
+
+    
+    
+    this.http.get("http://localhost:3000/getListeLivre", { params: parametres } )
+    .subscribe(res => {
+
+      liste.innerHTML += "<ul>";
+      for(var obj in res){
+        //Livre.idLivre, Livre.titre, Livre.auteur
+        liste.innerHTML += '<li>' +res[obj].titre + '--->' + res[obj].auteur + '<button (click)="rendreLivre(' + res[obj].idLivre + ')"">Rendre</button></li>';
+      }
+      
+
+      document.getElementById("MenuPrincipal").style.display = "none";
+      document.getElementById("MenuListe").style.display = "block";
+      liste.innerHTML += "</ul>";
+    })
+  }
+
+  rendreLivre(id){
+    let parametres = new HttpParams();
+    parametres = parametres.append('pseudo', this.pseudo);
+    parametres = parametres.append('idLivre', id);
+    this.http.delete("http://localhost:3000/removeListeLivre", {params : parametres})
+      .subscribe(res => {
+        console.log(res);
+        this.resetAuMenuPrincipal()
+      })
+  }
+
   inscription() {
     //Verifier que le compte n'existe pas déjà
     let parametres = new HttpParams();
@@ -314,12 +350,11 @@ cherche(){
   let parametres = new HttpParams();
   parametres = parametres.append('recherche',this.recherche);
 
-  this.http.get("http://localhost:3000/getLivre", { params: parametres, responseType:"text"} )
+  this.http.get("http://localhost:3000/getLivre", { params: parametres} )
   .subscribe(res => { console.log(res);
-    var json = JSON.parse(res);
-    for(var obj in json){
-      console.log(json[obj]);
-      this.livres.push()
+    for(var obj in res){
+      console.log(res[obj]);
+      
     }
     this.livres = [
       {
@@ -327,13 +362,28 @@ cherche(){
         auteur:res[0].auteur,
         id: res[0].idLivre
       },      
-    ]
+    ];
   
   
 })}
 
-ajouter(){
-  let parametres = new HttpParams();
+ajouter(id){
+  this.http.post( "http://localhost:3000/rendreIndisponible", {idLivre: id } )
+  .subscribe(res => {
+    console.log(this.pseudo);
+
+    this.http.post("http://localhost:3000/addListeLivre", {
+      pseudo: this.pseudo,
+      idLivre: id })
+    .subscribe(res => {
+      //console.log(res);
+    })
+
+
+    
+    this.resetAuMenuPrincipal();
+  })
+  
 }
 
 }
