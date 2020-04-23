@@ -42,20 +42,12 @@ app.get('/', function (req, res) {
 
 
 app.get('/connection', function (req, res) {
-    
-<<<<<<< HEAD
-=======
-
->>>>>>> a442a3b00d13c1ca23d9b1389193344af7ca51dc
-    con.query('SELECT `pseudo` FROM `Utilisateur` as u WHERE (u.pseudo = "'+req.query.id 
+    con.query('SELECT `pseudo`, `role` FROM `Utilisateur` as u WHERE (u.pseudo = "'+req.query.id 
                 +'" OR u.mail = "'+req.query.id 
                 +'") AND u.password ="'+req.query.mdp 
                 +'";'
     , function (err, results) {
-<<<<<<< HEAD
-=======
 
->>>>>>> a442a3b00d13c1ca23d9b1389193344af7ca51dc
         if (err) throw err;res.send(JSON.stringify(results));
     });
 });
@@ -81,17 +73,87 @@ app.post('/addUser', function (req, res) {
     });
 });
 
+app.post('/addLivre', function (req, res) {
+    var etat = "";
+    var isbn = "";
+    var resume = "";
+    var parution = "";
+    var nbPages = "";
+    if(req.body.etat != ""){
+        etat = ', etat ="'+req.body.etat + '"';
+    }
+    if(req.body.isbn != ""){
+        isbn = ', isbn ="'+req.body.isbn + '"';
+    }
+    if(req.body.resume != ""){
+        resume = ', resume ="'+req.body.resume + '"';
+    }
+    if(req.body.dateParution != ""){
+        parution = ', parution ='+req.body.dateParution;
+    }
+    if(req.body.nbPage != ""){
+        nbPages = ', nbPages ='+req.body.nbPage;
+    }
+    
+    con.query('INSERT INTO Livre SET titre = "'+req.body.titre + '"'
+                +etat
+                +', langue ="'+req.body.langue + '"'
+                +', edition ="'+req.body.edition + '"'
+                +isbn
+                +resume
+                +parution
+                +nbPages
+                +', donneur ="'+req.body.donneur + '"'
+                +', auteur ="'+req.body.auteur + '";'
+    , function (error, results, fields) {
+        if (error) 
+            throw error;
+        res.send(results);
+    });
+});
 
+app.post('/addLivreCategorie', function (req, res) {
+    con.query('INSERT INTO LivreCategorie SET nomCategorie = "'+req.body.categorie
+                +'", idLivre ="'+req.body.idLivre
+                +'";'
+    , function (error, results, fields) {
+        if (error) 
+            throw error;
+        res.send(results);
+    });
+});
 
-
-app.get('/getLivre',function (req, res){
-
-    con.query('SELECT * FROM `Livre` WHERE `titre` = ?', [req.query.recherche], function (err, results) {
+app.get('/getIdLivre',function (req, res){
+    console.log(req.query);
+    con.query('SELECT `idLivre` FROM `Livre` WHERE `titre` = "'+req.query.titre
+    +'" AND `donneur` = "' + req.query.pseudo + '" ORDER BY idLivre DESC;'
+    , function (err, results) {
         if (err) throw err;res.send(JSON.stringify(results));
     });
 });
 
 
+app.post('/nommerModo', function (req, res) {
+    con.query('UPDATE Utilisateur SET role = "modo" WHERE `pseudo` = "'+req.body.pseudo + '";'
+    , function (error, results, fields) {
+        if (error) 
+            throw error;
+        res.send(results);
+    });
+});
+
+app.get('/getLivre',function (req, res){
+    con.query('SELECT * FROM `Livre` WHERE `titre` LIKE "%'+req.query.recherche+'%";', function (err, results) {
+        if (err) throw err;res.send(JSON.stringify(results));
+    });
+});
+
+app.get('/getCategorie',function (req, res){
+
+    con.query('SELECT `nomCategorie` FROM `Categorie`', function (err, results) {
+        if (err) throw err;res.send(JSON.stringify(results));
+    });
+});
 
 /*
 app.get('/', function(req, res, next){

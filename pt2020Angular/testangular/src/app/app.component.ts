@@ -16,14 +16,36 @@ export class AppComponent {
   //Inscription ET Connexion
   resInscription = "";
   resConnection = "";
-<<<<<<< HEAD
   pseudo = "";
   mdp = "";
   mail = "";
+  futurModo = "";
+  role = "";
 
+  //info livre
+  titre = "";
+  auteur = "";
+  etat = "";
+  langue = "";
+  edition = "";
+  ISBN = "";
+  resume = "";
+  dateParution = "";
+  nbPage = "";
+  categorie = ""
+
+  messageMenuPrincipal = "";
+  messageMenuDonner = "";
   //
   recherche= '';
-  livre="";
+  /*livres = [
+    {
+      titre: 'test',
+      auteur:'test2'
+    }
+    
+  ]*/
+  livres=[];
 
   resetAConnection(){
     document.getElementById("ConnectionBlock").style.display = "block";
@@ -37,32 +59,48 @@ export class AppComponent {
     this.mail = "";
 
     this.recherche= '';
-    this.livre="";
+    this.livres=[];
   }
 
+  saisiFuturModo(event: KeyboardEvent){
+    this.futurModo = (event.target as HTMLInputElement).value;
+  }
 
-=======
-  title = 'testangular';
-  pseudo = "";
-  mdp = "";
-  recherche= '';
-  /*livres = [
-    {
-      titre: 'test',
-      auteur:'test2'
-    }
-    
-  ]*/
-  livres=[];
->>>>>>> a442a3b00d13c1ca23d9b1389193344af7ca51dc
+  resetAuMenuPrincipal(){
+    document.getElementById("MenuPrincipal").style.display = "block";
+    document.getElementById("RechercheLivre").style.display = "none";
+    document.getElementById("InscriptionBlock").style.display = "none";
+    document.getElementById("ConnectionBlock").style.display = "none";
+    document.getElementById("MenuDonner").style.display = "none";
+    document.getElementById("RechercheLivre").style.display = "none";
+
+    this.resInscription = "";
+    this.resConnection = "";
+    this.futurModo = "";
+
+    this.recherche= '';
+    this.livres=[];
+    this.messageMenuPrincipal="";
+    this.messageMenuDonner = "";
+
+    //info livre
+    this.titre = "";
+    this.auteur = "";
+    this.etat = "";
+    this.langue = "";
+    this.edition = "";
+    this.ISBN = "";
+    this.resume = "";
+    this.dateParution = "";
+    this.nbPage = "";
+    this.categorie = "";
+
+  }
 
   saisiPseudoConnection(event: KeyboardEvent){
     this.pseudo = (event.target as HTMLInputElement).value;
   }
-<<<<<<< HEAD
-=======
 
->>>>>>> a442a3b00d13c1ca23d9b1389193344af7ca51dc
   saisiMDPConnection(event: KeyboardEvent){
     this.mdp = (event.target as HTMLInputElement).value;
   }
@@ -70,7 +108,6 @@ export class AppComponent {
     this.mail = (event.target as HTMLInputElement).value;
   }
 
-<<<<<<< HEAD
   WriteBook(event: KeyboardEvent){
     this.recherche = (event.target as HTMLInputElement).value;
   }
@@ -78,11 +115,41 @@ export class AppComponent {
   constructor(private http: HttpClient){}
 
 
-  creationCompte1(){
+  afficherMenuInscription(){
     document.getElementById("ConnectionBlock").style.display = "none";
     document.getElementById("InscriptionBlock").style.display = "block";
   }
-
+  afficherMenuNomination(){
+    // Si est admin, accéder a ce menu sinon erreur
+    if(this.role == "admin"){
+      document.getElementById("MenuPrincipal").style.display = "none";
+      document.getElementById("MenuNominationModo").style.display = "block";
+    }else{
+      this.messageMenuPrincipal = "Vous n'êtes pas admin et ne pouvez pas nommer de modérateur";
+    }
+  }
+  afficherMenuDonner(){
+    document.getElementById("MenuPrincipal").style.display = "none";
+    document.getElementById("MenuDonner").style.display = "block";
+    this.http.get("http://localhost:3000/getCategorie", {responseType: "text"} )
+    .subscribe(res => {
+      var select = document.getElementById("selectCategorie");
+      //console.log(res);
+      var json = JSON.parse(res);
+      for (var obj in json){
+        //console.log(json[obj].nomCategorie);
+        var option = document.createElement("option");
+        option.text = json[obj].nomCategorie;
+        select.add(option);
+        //console.log(select);
+      }
+      
+    })
+  }
+  afficherMenuChercher(){
+    document.getElementById("MenuPrincipal").style.display = "none";
+    document.getElementById("RechercheLivre").style.display = "block";
+  }
   inscription() {
     //Verifier que le compte n'existe pas déjà
     let parametres = new HttpParams();
@@ -99,7 +166,7 @@ export class AppComponent {
           mdp: this.mdp,
         } )
         .subscribe(res => {
-          console.log(res);
+          //console.log(res);
           this.resInscription = "Inscription réussi"
           this.resetAConnection();
         })
@@ -108,19 +175,107 @@ export class AppComponent {
       }
     })
   }
-=======
 
-
-  WriteBook(event: KeyboardEvent){
-    this.recherche = (event.target as HTMLInputElement).value;
+  nommerModo(){
+    this.http.post("http://localhost:3000/nommerModo", {
+          pseudo: this.futurModo
+        } )
+        .subscribe(res => {
+          //console.log(res);
+          this.resetAuMenuPrincipal();
+        })
   }
 
 
-  constructor(private http: HttpClient){}
-  
->>>>>>> a442a3b00d13c1ca23d9b1389193344af7ca51dc
+  saisiTitre(event: KeyboardEvent){
+    this.titre = (event.target as HTMLInputElement).value;
+  }
+  saisiAuteur(event: KeyboardEvent){
+    this.auteur = (event.target as HTMLInputElement).value;
+  }
+  saisiEtat(event: KeyboardEvent){
+    this.etat = (event.target as HTMLInputElement).value;
+  }
+  saisiLangue(event: KeyboardEvent){
+    this.langue = (event.target as HTMLInputElement).value;
+  }
+  saisiEdition(event: KeyboardEvent){
+    this.edition = (event.target as HTMLInputElement).value;
+  }
+  saisiISBN(event: KeyboardEvent){
+    this.ISBN = (event.target as HTMLInputElement).value;
+  }
+  saisiResume(event: KeyboardEvent){
+    this.resume = (event.target as HTMLInputElement).value;
+  }
+  saisiDate(event: KeyboardEvent){
+    this.dateParution = (event.target as HTMLInputElement).value;
+  }
+  saisiPage(event: KeyboardEvent){
+    this.nbPage = (event.target as HTMLInputElement).value;
+  }
+
+  donnerLivre(){
+    if((this.titre == "")||(this.langue == "")||(this.edition == "")||(this.auteur == "")){
+      //Saisi incomplète
+      this.messageMenuDonner = "Vous avez oublié de remplir un ou plusieurs champs obligatoires";
+    }else{
+      //console.log(this.pseudo);
+      var titreLivre = this.titre;
+      this.http.post("http://localhost:3000/addLivre", {
+          titre: this.titre,
+          etat: this.etat,
+          langue: this.langue,
+          edition: this.edition,
+          isbn: this.ISBN,
+          resume: this.resume,
+          dateParution: this.dateParution,
+          nbPage: this.nbPage,
+          donneur: this.pseudo,
+          auteur: this.auteur
+        } )
+        .subscribe(res => {
+          //console.log(res);
+          //Enregistrer une catégorie
+          var select = document.getElementById("selectCategorie");
+          this.categorie = select.options[select.selectedIndex].value;
+
+          let parametres = new HttpParams();
+          parametres = parametres.append('pseudo', this.pseudo);
+          parametres = parametres.append('titre', titreLivre);
+          console.log("Params : " + titreLivre);
+
+          
+          this.http.get("http://localhost:3000/getIdLivre", { params: parametres, responseType: "text"} )
+          .subscribe(res2 => {
+            var json = JSON.parse(res2);
+            console.log(res2);
+            console.log(json[0]);
+            var idLivre = json[0].idLivre;
+
+            this.http.post("http://localhost:3000/addLivreCategorie", {
+            categorie: this.categorie,
+            idLivre: idLivre })
+            .subscribe(res => {
+              console.log(res);
+            })
+          })
+          
+          
+        })
+        
+        
 
 
+        
+        this.resetAuMenuPrincipal();
+    }
+    
+  }
+
+  listeLivre(){
+
+  }
 
   connection() {
     let parametres = new HttpParams();
@@ -130,22 +285,20 @@ export class AppComponent {
     this.http.get("http://localhost:3000/connection", { params: parametres, responseType: "text"} )
     .subscribe(res => {
       
-      var json = JSON.parse(res);
-      
       if(res != "[]"){
+        var json = JSON.parse(res);
+        console.log(json[0].role);
+        this.role = json[0].role;
         this.resConnection = "Connecté";
-        document.getElementById("ConnectionBlock").style.display = "none";
-        document.getElementById("RechercheLivre").style.display = "block";
-        
+        this.resetAuMenuPrincipal();
       }else{
         this.resConnection = "Echec de connexion";
       }    
     })
   }
-<<<<<<< HEAD
-=======
 
-  test() {
+
+  /*test() {
   let parametres = new HttpParams();
   parametres = parametres.append('pseudo', this.pseudo);
   
@@ -154,16 +307,20 @@ export class AppComponent {
   this.http.get("http://localhost:3000/getUser", { params: parametres} )
   //this.http.get("http://localhost:3000/getUser", { responseType: 'text' })
   .subscribe(res => { console.log(res);
-})}
+})}*/
 
->>>>>>> a442a3b00d13c1ca23d9b1389193344af7ca51dc
 
 cherche(){
   let parametres = new HttpParams();
   parametres = parametres.append('recherche',this.recherche);
 
-  this.http.get("http://localhost:3000/getLivre", { params: parametres} )
+  this.http.get("http://localhost:3000/getLivre", { params: parametres, responseType:"text"} )
   .subscribe(res => { console.log(res);
+    var json = JSON.parse(res);
+    for(var obj in json){
+      console.log(json[obj]);
+      this.livres.push()
+    }
     this.livres = [
       {
         titre: res[0].titre,

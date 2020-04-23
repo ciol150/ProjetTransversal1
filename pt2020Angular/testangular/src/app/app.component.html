@@ -324,21 +324,11 @@
 
 
 
-<<<<<<< HEAD
 <!-- Ajouter des boutons-->
 
-=======
-<div id ="ConnectionBlock">
-
-
-
-<input (keyup)="saisiPseudoConnection($event)" name ="Pseudo">
-<input (keyup)="saisiMDPConnection($event)" type ="password" name="Mot de Passe">
-<button (click)="connection()">Envoyer</button>
->>>>>>> a442a3b00d13c1ca23d9b1389193344af7ca51dc
 
 <div id="ConnectionBlock">
-  <button (click)="creationCompte1()">Se créer un compte</button>
+  <button (click)="afficherMenuInscription()">Se créer un compte</button>
   Connexion :
   <input (keyup)="saisiPseudoConnection($event)" name ="Pseudo">
   <input (keyup)="saisiMDPConnection($event)" type ="password" name="Mot de Passe">
@@ -346,7 +336,6 @@
   <p>{{resConnection}}</p>
 </div>
 
-<<<<<<< HEAD
 <div id="InscriptionBlock" style="display: none;">
   Inscription :
   <input (keyup)="saisiPseudoConnection($event)" name ="Pseudo">
@@ -357,24 +346,57 @@
 </div>
 
 
-<div id="RechercheLivre" style="display: none;">
-=======
-  
+<div id="MenuPrincipal" style="display: none;">
+  <button (click)="afficherMenuNomination()">Nommer modérateur</button>
+  <button (click)="afficherMenuDonner()">Donner livre</button>
+  <button (click)="afficherMenuChercher()">Chercher livre</button>
+  <button (click)="abc()">Consulter recommandations</button>
+  <button (click)="listeLivre()">Consulter lite de livres</button>
+  <br>
+  <p>{{messageMenuPrincipal}}</p>
+</div>
 
->>>>>>> a442a3b00d13c1ca23d9b1389193344af7ca51dc
+
+<!-- Nommer modérateur -->
+<div id="MenuNominationModo" style="display: none;">
+  <input (keyup)="saisiFuturModo($event)">
+  <button (click)="nommerModo()">Nommer modérateur</button>
+</div>
+
+<!-- Donner Livre-->
+<div id="MenuDonner"  style="display: none;">
+  Titre*            <input (keyup)="saisiTitre($event)"><br>
+  Auteur*            <input (keyup)="saisiAuteur($event)"><br>
+  Etat              <input (keyup)="saisiEtat($event)"><br>
+  Langue*           <input (keyup)="saisiLangue($event)"><br>
+  Edition*          <input (keyup)="saisiEdition($event)"><br>
+  ISBN              <input (keyup)="saisiISBN($event)"><br>
+  Résumé            <input (keyup)="saisiResume($event)"><br>
+  Date de parution  <input (keyup)="saisiDate($event)"><br>
+  Nombre de pages   <input (keyup)="saisiPage($event)"><br>
+  Categories        <select id="selectCategorie"></select><br>
+  <br>
+  * : champs obligatoires
+  <br>
+  {{messageMenuDonner}}
+  <br>
+  <button (click)="donnerLivre()">Enregistrer livre</button>
+</div>
+
+
+<div id="RechercheLivre" style="display: none;">
 <input (keyup)="WriteBook($event)" id="searchBook" placeholder="Chercher un livre" type="textfield">
 <input (click)="cherche()" type="button" value="ok">
-<<<<<<< HEAD
 </div>
   
   
-=======
 
 <ul>
   <li *ngFor="let livre of livres">{{livre.titre}} ---> {{livre.auteur}} <input (click)="ajouter()" type="button" value={{livre.id}}></li>
 </ul>
->>>>>>> a442a3b00d13c1ca23d9b1389193344af7ca51dc
    
+
+
   <!-- Footer -->
   <footer>
    
