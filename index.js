@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({
 
 const mysql= require('mysql');
 let con = mysql.createConnection({
-    host: "10.194.69.15",
+    host: "10.25.10.21",
     user: "g7",
     password: "TxCPJKqTRA0MA2fh",
     database: "g7"
@@ -28,7 +28,7 @@ app.post('/addProfil', function (req, res) {
     });
 });
 */
-app.use(function(req, res, next) {res.header("Access-Control-Allow-Origin", "*");res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");next();});
+app.use(function(req, res, next) {res.header("Access-Control-Allow-Methods", "*");res.header("Access-Control-Allow-Origin", "*");res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");next();});
 
 
 app.get('/', function (req, res) {
@@ -160,6 +160,26 @@ app.post('/rendreDisponible', function (req, res) {
     });
 });
 
+app.post('/modifierRedonneur', function (req, res) {
+    con.query('UPDATE Livre SET redonneur = "'+ req.body.pseudo +'" WHERE `idLivre` = "'+req.body.idLivre + '";'
+    , function (error, results, fields) {
+        if (error) 
+            throw error;
+        res.send(results);
+    });
+});
+
+app.post('/addLivresRendus', function (req, res) {
+    con.query('INSERT INTO LivresRendus SET pseudo = "'+req.body.pseudo
+                +'", idLivre ="'+req.body.idLivre
+                +'";'
+    , function (error, results, fields) {
+        if (error) 
+            throw error;
+        res.send(results);
+    });
+});
+
 app.post('/addListeLivre', function (req, res) {
     con.query('INSERT INTO ListeDeLivre SET pseudo = "'+req.body.pseudo
                 +'", idLivre ="'+req.body.idLivre
@@ -172,8 +192,9 @@ app.post('/addListeLivre', function (req, res) {
 });
 
 app.delete('/removeListeLivre', function (req, res) {
-    con.query('DELETE FROM ListeDeLivre WHERE pseudo = "'+req.body.pseudo
-                +'" AND idLivre ="'+req.body.idLivre
+    //console.log(req);
+    con.query('DELETE FROM ListeDeLivre WHERE pseudo = "'+req.query.pseudo
+                +'" AND idLivre ="'+req.query.idLivre
                 +'";'
     , function (error, results, fields) {
         if (error) 
@@ -181,6 +202,44 @@ app.delete('/removeListeLivre', function (req, res) {
         res.send(results);
     });
 });
+
+app.delete('/suppLivre_liste', function (req, res) {
+    //console.log(req);
+    con.query('DELETE FROM ListeDeLivre WHERE idLivre ="' + req.query.idLivre + '";'
+    , function (error, results, fields) {
+        if (error) 
+            throw error;
+        res.send(results);
+    });
+});
+app.delete('/suppLivre_rendu', function (req, res) {
+    //console.log(req);
+    con.query('DELETE FROM LivresRendus WHERE idLivre ="' + req.query.idLivre + '";'
+    , function (error, results, fields) {
+        if (error) 
+            throw error;
+        res.send(results);
+    });
+});
+app.delete('/suppLivre_categorie', function (req, res) {
+    //console.log(req);
+    con.query('DELETE FROM LivreCategorie WHERE idLivre ="' + req.query.idLivre + '";'
+    , function (error, results, fields) {
+        if (error) 
+            throw error;
+        res.send(results);
+    });
+});
+app.delete('/suppLivre', function (req, res) {
+    //console.log(req);
+    con.query('DELETE FROM Livre WHERE idLivre ="' + req.query.idLivre + '";'
+    , function (error, results, fields) {
+        if (error) 
+            throw error;
+        res.send(results);
+    });
+});
+
 
 app.get('/getListeLivre',function (req, res){
     con.query('SELECT Livre.idLivre, Livre.titre, Livre.auteur FROM `ListeDeLivre`, `Livre` WHERE ListeDeLivre.idLivre = Livre.idLivre AND ListeDeLivre.pseudo = "'+req.query.pseudo
@@ -191,7 +250,22 @@ app.get('/getListeLivre',function (req, res){
 
 
 app.get('/getLivre',function (req, res){
-    con.query('SELECT * FROM `Livre` WHERE `disponible` = 1 AND `titre` LIKE "%'+req.query.recherche+'%";', function (err, results) {
+    con.query('SELECT * FROM `Livre` WHERE `disponible` = 1 AND ( `titre` LIKE "%'+req.query.recherche+'%" OR `auteur` LIKE "%'+req.query.recherche+'%");', function (err, results) {
+        if (err) throw err;res.send(JSON.stringify(results));
+    });
+});
+
+app.get('/getLivreCat',function (req, res){
+    con.query('SELECT * FROM `Livre`,`LivreCategorie` WHERE `disponible` = 1 AND `Livre`.`idLivre`=`LivreCategorie`.`idLivre` AND `nomCategorie` = "'+req.query.categorie+'";', function (err, results) {
+        if (err) throw err;res.send(JSON.stringify(results));
+    });
+});
+
+app.get('/getRecommandations',function (req, res){
+    con.query('SELECT Livre.*'
+    +' FROM ListeDeLivre,  LivreCategorie, LivreCategorie as Suggere, Livre'
+    +' WHERE Livre.disponible = 1 AND (ListeDeLivre.pseudo = "'+ req.query.pseudo +'" AND ListeDeLivre.idLivre = LivreCategorie.idLivre AND Suggere.nomCategorie = LivreCategorie.nomCategorie AND Livre.idLivre = Suggere.idLivre)'
+    , function (err, results) {
         if (err) throw err;res.send(JSON.stringify(results));
     });
 });
@@ -218,3 +292,5 @@ con.connect(function(err) {
 });
 
 app.listen(3000, function () { console.log('Example app listening on port 3000! ') })
+
+ 

@@ -282,6 +282,8 @@
 </style>
 
 
+
+
 <!-- Toolbar -->
 <div class="toolbar" role="banner">
   <img
@@ -340,8 +342,8 @@
   <button (click)="afficherMenuNomination()">Nommer modérateur</button>
   <button (click)="afficherMenuDonner()">Donner livre</button>
   <button (click)="afficherMenuChercher()">Chercher livre</button>
-  <button (click)="abc()">Consulter recommandations</button>
-  <button (click)="afficherMenuListe()">Consulter lite de livres</button>
+  <button (click)="afficherMenuRecommandation()">Consulter recommandations</button>
+  <button (click)="afficherMenuListe()">Consulter liste de livres</button>
   <br>
   <p>{{messageMenuPrincipal}}</p>
 </div>
@@ -354,7 +356,8 @@
 </div>
 
 <!-- Donner Livre-->
-<div id="MenuDonner"  style="display: none;">
+<div id="MenuDonner" style="display: none;">
+  <button (click)="resetAuMenuPrincipal()">Retour</button><br>
   Titre*            <input (keyup)="saisiTitre($event)"><br>
   Auteur*            <input (keyup)="saisiAuteur($event)"><br>
   Etat              <input (keyup)="saisiEtat($event)"><br>
@@ -375,18 +378,38 @@
 
 <div id="MenuListe" style="display: none;">
   <button (click)="resetAuMenuPrincipal()">Retour</button>
+
+  <ul>
+    <li *ngFor="let buttonText of buttonsListeLivre; let i = index"> {{nomLivres[i]}} <button (click)="rendreLivre(idLivres[i])">{{idLivres[i]}}</button></li>
+  </ul>
 </div>
 
 <!-- Rechercher -->
 <div id="RechercheLivre" style="display: none;">
+<button (click)="resetAuMenuPrincipal()">Retour</button>
+<br>
 <input (keyup)="WriteBook($event)" id="searchBook" placeholder="Chercher un livre" type="textfield">
-<input (click)="cherche()" type="button" value="ok">
+<select id="selectCategorieRecherche"></select>
+<br>
+<input (click)="cherche()" type="button" value="Recherche par mot clef">
+<input (click)="chercheCategorie()" type="button" value="Recherche par catégorie">
+
 </div>
+
+<!-- Recommandation -->
+<div id="MenuRecommandation" style="display: none;">
+  <button (click)="resetAuMenuPrincipal()">Retour</button>
+  <br>
   
+  
+  </div>
+  <p id="TexteRecherche"></p>
 <ul>
-  <li *ngFor="let livre of livres">{{livre.titre}} ---> {{livre.auteur}} <input (click)="ajouter(livre.id)" type="button" value={{livre.id}}></li>
+  <li *ngFor="let livre of livres;">{{livre.titre}} ---> {{livre.auteur}} <input (click)="ajouter(livre.id)" type="button" value="Prendre"><input (click)="supprimerLivre(livre.id)" type="button" value="Supprimer"></li>
 </ul>
-   
+
+
+
 <!-- Liste de livre -->
 
 

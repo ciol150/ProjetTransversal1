@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { HttpClient, HttpParams} from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 
 
@@ -13,6 +13,18 @@ import { HttpClientModule } from '@angular/common/http';
 
 export class AppComponent {
   
+  
+  public buttonsListeLivre:Array<string> =[];
+  public addResListe(index: number):void {
+    this.buttonsListeLivre = [...this.buttonsListeLivre, `${index}`];
+  }
+
+  public ListeRecherche:Array<string> =[];
+  public addResRecherche(index: number):void {
+    this.ListeRecherche = [...this.ListeRecherche, `${index}`];
+  }
+
+
   //Inscription ET Connexion
   resInscription = "";
   resConnection = "";
@@ -21,6 +33,10 @@ export class AppComponent {
   mail = "";
   futurModo = "";
   role = "";
+
+  // Infos Livres
+  public nomLivres:Array<string> =[];
+  public idLivres:Array<string> =[];
 
   //info livre
   titre = "";
@@ -38,14 +54,8 @@ export class AppComponent {
   messageMenuDonner = "";
   //
   recherche= '';
-  /*livres = [
-    {
-      titre: 'test',
-      auteur:'test2'
-    }
-    
-  ]*/
-  livres=[];
+ 
+  livres = [];
 
   resetAConnection(){
     document.getElementById("ConnectionBlock").style.display = "block";
@@ -67,6 +77,7 @@ export class AppComponent {
   }
 
   resetAuMenuPrincipal(){
+    //console.log("ZUT !");
     document.getElementById("MenuPrincipal").style.display = "block";
     document.getElementById("RechercheLivre").style.display = "none";
     document.getElementById("InscriptionBlock").style.display = "none";
@@ -74,6 +85,7 @@ export class AppComponent {
     document.getElementById("MenuDonner").style.display = "none";
     document.getElementById("RechercheLivre").style.display = "none";
     document.getElementById("MenuListe").style.display = "none";
+    document.getElementById("MenuRecommandation").style.display = "none";
     this.resInscription = "";
     this.resConnection = "";
     this.futurModo = "";
@@ -94,7 +106,7 @@ export class AppComponent {
     this.dateParution = "";
     this.nbPage = "";
     this.categorie = "";
-
+    this.buttonsListeLivre = [];
   }
 
   saisiPseudoConnection(event: KeyboardEvent){
@@ -104,6 +116,7 @@ export class AppComponent {
   saisiMDPConnection(event: KeyboardEvent){
     this.mdp = (event.target as HTMLInputElement).value;
   }
+
   saisiMailConnection(event: KeyboardEvent){
     this.mail = (event.target as HTMLInputElement).value;
   }
@@ -113,12 +126,15 @@ export class AppComponent {
   }
 
   constructor(private http: HttpClient){}
+  
+  
 
 
   afficherMenuInscription(){
     document.getElementById("ConnectionBlock").style.display = "none";
     document.getElementById("InscriptionBlock").style.display = "block";
   }
+
   afficherMenuNomination(){
     // Si est admin, accéder a ce menu sinon erreur
     if(this.role == "admin"){
@@ -133,14 +149,14 @@ export class AppComponent {
     document.getElementById("MenuDonner").style.display = "block";
     this.http.get("http://localhost:3000/getCategorie", {responseType: "text"} )
     .subscribe(res => {
-      var select = document.getElementById("selectCategorie");
+      var select = document.getElementById("selectCategorie") as HTMLSelectElement;
       //console.log(res);
       var json = JSON.parse(res);
       for (var obj in json){
         //console.log(json[obj].nomCategorie);
         var option = document.createElement("option");
         option.text = json[obj].nomCategorie;
-        select.add(option);
+        select.add(option);                       //////////////////////////////////////////////////////////////////////////////////
         //console.log(select);
       }
       
@@ -149,10 +165,49 @@ export class AppComponent {
   afficherMenuChercher(){
     document.getElementById("MenuPrincipal").style.display = "none";
     document.getElementById("RechercheLivre").style.display = "block";
+    this.recherche = "";
+
+    this.http.get("http://localhost:3000/getCategorie")
+    .subscribe(res => {
+      var select = document.getElementById("selectCategorieRecherche") as HTMLSelectElement;
+      //console.log(res);
+      for (var obj in res){
+        //console.log(json[obj].nomCategorie);
+        var option = document.createElement("option");
+        option.text = res[obj].nomCategorie;
+        select.add(option);                       //////////////////////////////////////////////////////////////////////////////////
+        //console.log(select);
+      }
+      
+    })
+
+    
+  }
+
+  afficherMenuRecommandation(){
+    document.getElementById("MenuPrincipal").style.display = "none";
+    document.getElementById("MenuRecommandation").style.display = "block";
+    
+
+    let parametres = new HttpParams();
+    this.livres =[];
+    parametres = parametres.append('pseudo',this.pseudo);
+  
+    this.http.get("http://localhost:3000/getRecommandations", { params: parametres} )
+    .subscribe(res => { console.log(res);
+      for(var obj in res){
+        //console.log(res[obj]);
+        this.livres = [ ...this.livres, {titre:res[obj].titre, auteur:res[obj].auteur, id:res[obj].idLivre}];
+        this.addResRecherche(res[obj].idLivre)
+      }
+      
+    })
+  
+
   }
 
   afficherMenuListe(){
-    var liste = document.getElementById("MenuListe");
+    
     let parametres = new HttpParams();
     parametres = parametres.append('pseudo', this.pseudo);
     //console.log(parametres);
@@ -161,30 +216,36 @@ export class AppComponent {
     
     this.http.get("http://localhost:3000/getListeLivre", { params: parametres } )
     .subscribe(res => {
-
-      liste.innerHTML += "<ul>";
-      for(var obj in res){
-        //Livre.idLivre, Livre.titre, Livre.auteur
-        liste.innerHTML += '<li>' +res[obj].titre + '--->' + res[obj].auteur + '<button (click)="rendreLivre(' + res[obj].idLivre + ')"">Rendre</button></li>';
-      }
+      var liste = document.getElementById("MenuListe");
+      var listeDeLivres = "";
+      this.nomLivres = [];
+      this.idLivres = [];
       
-
+      for(var obj in res){
+        this.nomLivres = [... this.nomLivres, `${res[obj].titre}`];
+        this.idLivres = [... this.idLivres, `${res[obj].idLivre}`];
+        
+        this.addResListe(res[obj].idLivre)
+     }
       document.getElementById("MenuPrincipal").style.display = "none";
       document.getElementById("MenuListe").style.display = "block";
-      liste.innerHTML += "</ul>";
+      
     })
+    
   }
-
   rendreLivre(id){
-    let parametres = new HttpParams();
-    parametres = parametres.append('pseudo', this.pseudo);
-    parametres = parametres.append('idLivre', id);
-    this.http.delete("http://localhost:3000/removeListeLivre", {params : parametres})
-      .subscribe(res => {
-        console.log(res);
-        this.resetAuMenuPrincipal()
+    this.http.delete("http://localhost:3000/removeListeLivre", { params : {'pseudo' : this.pseudo, 'idLivre' : id} }).subscribe(res => {
+        this.http.post("http://localhost:3000/rendreDisponible", {idLivre:id} ).subscribe(res => {
+          this.http.post("http://localhost:3000/modifierRedonneur", {idLivre:id, pseudo:this.pseudo} ).subscribe(res => {
+            this.http.post("http://localhost:3000/addLivresRendus", {pseudo:this.pseudo, idLivre:id}).subscribe(res => {
+              this.resetAuMenuPrincipal();
+            })
+          })
+        })
       })
   }
+
+  
 
   inscription() {
     //Verifier que le compte n'existe pas déjà
@@ -273,8 +334,8 @@ export class AppComponent {
         .subscribe(res => {
           //console.log(res);
           //Enregistrer une catégorie
-          var select = document.getElementById("selectCategorie");
-          this.categorie = select.options[select.selectedIndex].value;
+          var select = document.getElementById("selectCategorie") as HTMLSelectElement;
+          this.categorie = select.options[select.selectedIndex].value;  ///////////////////////////////////////////////////////////////////
 
           let parametres = new HttpParams();
           parametres = parametres.append('pseudo', this.pseudo);
@@ -309,10 +370,11 @@ export class AppComponent {
     
   }
 
+  /*
   listeLivre(){
 
   }
-
+*/
   connection() {
     let parametres = new HttpParams();
     parametres = parametres.append('id', this.pseudo);
@@ -349,23 +411,67 @@ export class AppComponent {
 cherche(){
   let parametres = new HttpParams();
   parametres = parametres.append('recherche',this.recherche);
+  this.livres =[];
+  var select = document.getElementById("selectCategorieRecherche") as HTMLSelectElement;
+  this.categorie = select.options[select.selectedIndex].value;  
 
   this.http.get("http://localhost:3000/getLivre", { params: parametres} )
   .subscribe(res => { console.log(res);
     for(var obj in res){
       console.log(res[obj]);
-      
+      this.livres = [ ...this.livres, {titre:res[obj].titre, auteur:res[obj].auteur, id:res[obj].idLivre}];
+      this.addResRecherche(res[obj].idLivre)
     }
-    this.livres = [
-      {
-        titre: res[0].titre,
-        auteur:res[0].auteur,
-        id: res[0].idLivre
-      },      
-    ];
+    
+  })
+}
+
+chercheCategorie(){
+  let parametres = new HttpParams();
   
-  
-})}
+  this.livres =[];
+  var select = document.getElementById("selectCategorieRecherche") as HTMLSelectElement;
+  this.categorie = select.options[select.selectedIndex].value;  
+  parametres = parametres.append('categorie',this.categorie);
+
+  this.http.get("http://localhost:3000/getLivreCat", { params: parametres} )
+  .subscribe(res => { console.log(res);
+    for(var obj in res){
+      console.log(res[obj]);
+      this.livres = [ ...this.livres, {titre:res[obj].titre, auteur:res[obj].auteur, id:res[obj].idLivre}];
+      this.addResRecherche(res[obj].idLivre)
+    }
+    
+  })
+}
+
+supprimerLivre(id){
+  if(this.role == "modo" || this.role == "admin"){
+    this.http.delete("http://localhost:3000/suppLivre_liste", { params : {'idLivre' : id} })
+      .subscribe(res => {
+        //console.log(res);
+        this.http.delete("http://localhost:3000/suppLivre_rendu", { params : {'idLivre' : id} })
+        .subscribe(res => {
+          //console.log(res);
+          this.http.delete("http://localhost:3000/suppLivre_categorie", { params : {'idLivre' : id} })
+          .subscribe(res => {
+            //console.log(res);
+            this.http.delete("http://localhost:3000/suppLivre", { params : {'idLivre' : id} })
+            .subscribe(res => {
+              //console.log(res);
+              var texte = document.getElementById("TexteRecherche");
+              texte.innerHTML = "Livre supprimé."
+              this.resetAuMenuPrincipal();
+            })
+          })
+          
+        })
+      })
+  }else{
+    var texte = document.getElementById("TexteRecherche");
+    texte.innerHTML = "Vous n'avez pas le droit de faire ça."
+  }
+}
 
 ajouter(id){
   this.http.post( "http://localhost:3000/rendreIndisponible", {idLivre: id } )
@@ -388,6 +494,3 @@ ajouter(id){
 
 }
 
-
-  
-    
