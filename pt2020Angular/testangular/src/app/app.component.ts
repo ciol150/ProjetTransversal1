@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
-import { HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpParams} from '@angular/common/http';
+
 
 
 @Component({
@@ -52,6 +52,7 @@ export class AppComponent {
 
   messageMenuPrincipal = "";
   messageMenuDonner = "";
+  TexteRecherche ="";
   //
   recherche= '';
  
@@ -94,6 +95,7 @@ export class AppComponent {
     this.livres=[];
     this.messageMenuPrincipal="";
     this.messageMenuDonner = "";
+    this.TexteRecherche = "";
 
     //info livre
     this.titre = "";
@@ -216,8 +218,8 @@ export class AppComponent {
     
     this.http.get("http://localhost:3000/getListeLivre", { params: parametres } )
     .subscribe(res => {
-      var liste = document.getElementById("MenuListe");
-      var listeDeLivres = "";
+      //var liste = document.getElementById("MenuListe");
+      //var listeDeLivres = "";
       this.nomLivres = [];
       this.idLivres = [];
       
@@ -235,11 +237,11 @@ export class AppComponent {
   }
   rendreLivre(id){
     this.http.delete("http://localhost:3000/removeListeLivre", { params : {'pseudo' : this.pseudo, 'idLivre' : id} }).subscribe(res => {
-        this.http.post("http://localhost:3000/rendreDisponible", {idLivre:id} ).subscribe(res => {
-          this.http.post("http://localhost:3000/modifierRedonneur", {idLivre:id, pseudo:this.pseudo} ).subscribe(res => {
-            this.http.post("http://localhost:3000/addLivresRendus", {pseudo:this.pseudo, idLivre:id}).subscribe(res => {
+        this.http.post("http://localhost:3000/rendreDisponible", {idLivre:id} ).subscribe(res2 => {
+          this.http.post("http://localhost:3000/modifierRedonneur", {idLivre:id, pseudo:this.pseudo} ).subscribe(res3 => {
+            //this.http.post("http://localhost:3000/addLivresRendus", {pseudo:this.pseudo, idLivre:id}).subscribe(res => {
               this.resetAuMenuPrincipal();
-            })
+            //})
           })
         })
       })
@@ -262,7 +264,7 @@ export class AppComponent {
           mail: this.mail,
           mdp: this.mdp,
         } )
-        .subscribe(res => {
+        .subscribe(res2 => {
           //console.log(res);
           this.resInscription = "Inscription réussi"
           this.resetAConnection();
@@ -353,8 +355,8 @@ export class AppComponent {
             this.http.post("http://localhost:3000/addLivreCategorie", {
             categorie: this.categorie,
             idLivre: idLivre })
-            .subscribe(res => {
-              console.log(res);
+            .subscribe(res3 => {
+              console.log(res3);
             })
           })
           
@@ -451,16 +453,15 @@ supprimerLivre(id){
       .subscribe(res => {
         //console.log(res);
         this.http.delete("http://localhost:3000/suppLivre_rendu", { params : {'idLivre' : id} })
-        .subscribe(res => {
+        .subscribe(res2 => {
           //console.log(res);
           this.http.delete("http://localhost:3000/suppLivre_categorie", { params : {'idLivre' : id} })
-          .subscribe(res => {
+          .subscribe(res3 => {
             //console.log(res);
             this.http.delete("http://localhost:3000/suppLivre", { params : {'idLivre' : id} })
-            .subscribe(res => {
+            .subscribe(res4 => {
               //console.log(res);
-              var texte = document.getElementById("TexteRecherche");
-              texte.innerHTML = "Livre supprimé."
+              this.TexteRecherche = "Livre supprimé."
               this.resetAuMenuPrincipal();
             })
           })
@@ -468,8 +469,7 @@ supprimerLivre(id){
         })
       })
   }else{
-    var texte = document.getElementById("TexteRecherche");
-    texte.innerHTML = "Vous n'avez pas le droit de faire ça."
+    this.TexteRecherche = "Vous n'avez pas le droit de faire ça."
   }
 }
 
@@ -481,8 +481,8 @@ ajouter(id){
     this.http.post("http://localhost:3000/addListeLivre", {
       pseudo: this.pseudo,
       idLivre: id })
-    .subscribe(res => {
-      //console.log(res);
+    .subscribe(res2 => {
+      //console.log(res2);
     })
 
 

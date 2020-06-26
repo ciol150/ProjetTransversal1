@@ -35,7 +35,9 @@ app.get('/', function (req, res) {
     con.query('select * from Utilisateur ', 
     [req.params.id], 
     function (err, results) {
-        if (err) throw err;res.send(JSON.stringify(results));
+        if (err) 
+            throw err;
+        res.send(JSON.stringify(results));
     });
 });
 
@@ -47,8 +49,9 @@ app.get('/connection', function (req, res) {
                 +'") AND u.password ="'+req.query.mdp 
                 +'";'
     , function (err, results) {
-
-        if (err) throw err;res.send(JSON.stringify(results));
+        if (err) 
+            throw err;
+        res.send(JSON.stringify(results));
     });
 });
 
@@ -57,7 +60,9 @@ app.get('/existeDeja', function (req, res) {
                 +'" OR u.mail = "'+req.query.mail 
                 +'");'
     , function (err, results) {
-        if (err) throw err;res.send(JSON.stringify(results));
+        if (err) 
+            throw err;
+        res.send(JSON.stringify(results));
     });
 });
 
@@ -128,7 +133,9 @@ app.get('/getIdLivre',function (req, res){
     con.query('SELECT `idLivre` FROM `Livre` WHERE `titre` = "'+req.query.titre
     +'" AND `donneur` = "' + req.query.pseudo + '" ORDER BY idLivre DESC;'
     , function (err, results) {
-        if (err) throw err;res.send(JSON.stringify(results));
+        if (err) 
+            throw err;
+        res.send(JSON.stringify(results));
     });
 });
 
@@ -181,14 +188,20 @@ app.post('/addLivresRendus', function (req, res) {
 });
 
 app.post('/addListeLivre', function (req, res) {
-    con.query('INSERT INTO ListeDeLivre SET pseudo = "'+req.body.pseudo
-                +'", idLivre ="'+req.body.idLivre
-                +'";'
-    , function (error, results, fields) {
-        if (error) 
-            throw error;
-        res.send(results);
-    });
+    try{
+        con.query('INSERT INTO ListeDeLivre SET pseudo = "'+req.body.pseudo
+                    +'", idLivre ="'+req.body.idLivre
+                    +'";'
+            , function (error, results, fields) {
+                //if (error) 
+                    //throw error;
+                res.send(results);
+            });
+    } catch (e){
+    //    if (e.code === 'ER_DUP_ENTRY') {
+    //        //handleHttpErrors(SYSTEM_ERRORS.USER_ALREADY_EXISTS);
+    //    }
+    }
 });
 
 app.delete('/removeListeLivre', function (req, res) {
@@ -244,20 +257,26 @@ app.delete('/suppLivre', function (req, res) {
 app.get('/getListeLivre',function (req, res){
     con.query('SELECT Livre.idLivre, Livre.titre, Livre.auteur FROM `ListeDeLivre`, `Livre` WHERE ListeDeLivre.idLivre = Livre.idLivre AND ListeDeLivre.pseudo = "'+req.query.pseudo
     +'";', function (err, results) {
-        if (err) throw err;res.send(JSON.stringify(results));
+        if (err) 
+            throw err;
+        res.send(JSON.stringify(results));
     });
 });
 
 
 app.get('/getLivre',function (req, res){
     con.query('SELECT * FROM `Livre` WHERE `disponible` = 1 AND ( `titre` LIKE "%'+req.query.recherche+'%" OR `auteur` LIKE "%'+req.query.recherche+'%");', function (err, results) {
-        if (err) throw err;res.send(JSON.stringify(results));
+        if (err) 
+            throw err;
+        res.send(JSON.stringify(results));
     });
 });
 
 app.get('/getLivreCat',function (req, res){
     con.query('SELECT * FROM `Livre`,`LivreCategorie` WHERE `disponible` = 1 AND `Livre`.`idLivre`=`LivreCategorie`.`idLivre` AND `nomCategorie` = "'+req.query.categorie+'";', function (err, results) {
-        if (err) throw err;res.send(JSON.stringify(results));
+        if (err) 
+            throw err;
+        res.send(JSON.stringify(results));
     });
 });
 
@@ -266,15 +285,21 @@ app.get('/getRecommandations',function (req, res){
     +' FROM ListeDeLivre,  LivreCategorie, LivreCategorie as Suggere, Livre'
     +' WHERE Livre.disponible = 1 AND (ListeDeLivre.pseudo = "'+ req.query.pseudo +'" AND ListeDeLivre.idLivre = LivreCategorie.idLivre AND Suggere.nomCategorie = LivreCategorie.nomCategorie AND Livre.idLivre = Suggere.idLivre)'
     , function (err, results) {
-        if (err) throw err;res.send(JSON.stringify(results));
+        if (err) 
+            throw err;
+        res.send(JSON.stringify(results));
     });
 });
 
 app.get('/getCategorie',function (req, res){
-
-    con.query('SELECT `nomCategorie` FROM `Categorie`', function (err, results) {
-        if (err) throw err;res.send(JSON.stringify(results));
-    });
+    
+        con.query('SELECT `nomCategorie` FROM `Categorie`', function (err, results) {
+            if (err) 
+                throw err;
+            res.send(JSON.stringify(results));
+        });
+    
+    
 });
 
 /*
